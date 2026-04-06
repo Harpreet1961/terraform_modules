@@ -50,7 +50,7 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_route_table" "Public_route_table" {
-  for_each = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "public" && var.vpc_enabled }
+  for_each = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "public" && var.vpc_enabled && var.igw_enabled }
   vpc_id   = local.vpc_obj[each.value.vpc_key].vpc_id
   route {
     cidr_block = "0.0.0.0/0"
@@ -64,7 +64,7 @@ resource "aws_route_table" "Public_route_table" {
 }
 
 resource "aws_route_table_association" "Public_route_table_association" {
-  for_each       = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "public" && var.vpc_enabled }
+  for_each       = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "public" && var.vpc_enabled && var.igw_enabled }
   subnet_id      = aws_subnet.public_subnet[each.key].id
   route_table_id = aws_route_table.Public_route_table[each.key].id
 
