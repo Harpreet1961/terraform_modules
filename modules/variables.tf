@@ -11,6 +11,14 @@ variable "igw_enabled" {
   default     = true
 
 }
+
+variable "nat_enabled" {
+  description = "Enable NAT Gateway creation"
+  type        = bool
+  default     = true
+
+}
+
 variable "tfc_vpc_object" {
   description = "VPC Object for VPC creation"
   type = map(object({
