@@ -19,3 +19,14 @@ module "sg_object" {
 
   depends_on = [ module.vpc_object ]
 }
+
+module "ec2_object" {
+    source             = "./modules/ec2baseline"
+    tfc_ec2_object     = var.tfc_ec2_object
+    ec2_enabled        = var.ec2_enabled
+    subnet_id          = module.vpc_object.subnet_id
+    security_group_id   = module.sg_object.sg_id
+
+  depends_on = [ module.vpc_object, module.sg_object ]
+  
+}
