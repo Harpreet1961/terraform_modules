@@ -5,18 +5,28 @@ resource "aws_security_group" "sg" {
   name        = each.value.sg_name
   description = each.value.description
   vpc_id      = var.vpc_id[each.value.vpc_key]
-    ingress {
-     from_port   = each.value.ingress_from_port
-     to_port     = each.value.ingress_to_port
-     protocol    = each.value.ingress_protocol
-     cidr_blocks = each.value.ingress_cidr_blocks
-      }
-    egress {
-     from_port   = each.value.egress_from_port
-     to_port     = each.value.egress_to_port
-     protocol    = each.value.egress_protocol
-     cidr_blocks = each.value.egress_cidr_blocks
-      }
+    dynamic "ingress" {
+        for_each = each.value.ingress_rules
+        content {
+            from_port   = ingress.value.from_port
+            to_port     = ingress.value.to_port
+            protocol    = ingress.value.protocol
+            cidr_blocks = ingress.value.cidr_blocks
+        }
+      
+    }
+    dynamic "egress" {
+        for_each = each.value.egress_rules
+        content {
+            from_port   = egress.value.from_port
+            to_port     = egress.value.to_port
+            protocol    = egress.value.protocol
+            cidr_blocks = egress.value.cidr_blocks
+        }
+    }
+    lifecycle {
+      create_before_destroy = true
+    }
   tags = {
     Name = each.value.sg_name
   }

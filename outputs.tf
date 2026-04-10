@@ -5,7 +5,7 @@ output "vpc_id" {
 }
 
 output "sg_id" {
-    value       = module.sg_object.sg_id
-    description = "Security Group ID created by the module"
+  value       = module.sg_object.sg_id
+  description = "Security Group ID created by the module"
   
 }
