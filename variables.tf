@@ -50,40 +50,40 @@ variable "tfc_subnets_object" {
 ##### Security Group Variables #####
 
 variable "sg_enabled" {
-    description = "Enable Security Group creation"
-    type        = bool
-    default     = true
-  
+  description = "Enable Security Group creation"
+  type        = bool
+  default     = true
+
 }
 
 variable "tfc_sg_object" {
-    description = "Security Group Object for Security Group creation"
-    type = map(object({
-      sg_name        = string
-      description    = string
-      vpc_key        = string
-      ingress_rules  = list(object({
-        from_port   = number
-        to_port     = number
-        protocol    = string
-        cidr_blocks = list(string)
-      }))
-      egress_rules  = list(object({
-        from_port   = number
-        to_port     = number
-        protocol    = string
-        cidr_blocks = list(string)
-      }))
+  description = "Security Group Object for Security Group creation"
+  type = map(object({
+    sg_name     = string
+    description = string
+    vpc_key     = string
+    ingress_rules = list(object({
+      from_port   = number
+      to_port     = number
+      protocol    = string
+      cidr_blocks = list(string)
     }))
-    default = {}
-  
+    egress_rules = list(object({
+      from_port   = number
+      to_port     = number
+      protocol    = string
+      cidr_blocks = list(string)
+    }))
+  }))
+  default = {}
+
 }
 
 variable "vpc_id" {
-    description = "VPC ID map for Security Group creation"
-    type = map(string)
-    default = {}
-  
+  description = "VPC ID map for Security Group creation"
+  type        = map(string)
+  default     = {}
+
 }
 
 ###### EC2 Variables ######
@@ -94,29 +94,29 @@ variable "ec2_enabled" {
 }
 
 variable "tfc_ec2_object" {
-    description = "EC2 Object for EC2 creation"
-    type = map(object({
-      instance_name   = string
-      ami_id         = string
-      instance_type   = string
-      subnet_key      = string
-      sg_key          = string
-    }))
-    default = {}
-  
+  description = "EC2 Object for EC2 creation"
+  type = map(object({
+    instance_name = string
+    ami_id        = string
+    instance_type = string
+    subnet_key    = string
+    sg_key        = string
+  }))
+  default = {}
+
 }
 
-variable "subnet_id" { 
-    description = "Subnet ID map for EC2 creation"
-    type = map(string)
-    default = {}
-  
+variable "subnet_id" {
+  description = "Subnet ID map for EC2 creation"
+  type        = map(string)
+  default     = {}
+
 }
 
 variable "security_group_id" {
-    description = "Security Group ID map for EC2 creation"
-    type = map(string)
-    default = {}
+  description = "Security Group ID map for EC2 creation"
+  type        = map(string)
+  default     = {}
 
 
 }
