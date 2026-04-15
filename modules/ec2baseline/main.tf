@@ -3,7 +3,12 @@ resource "aws_instance" "ec2" {
   ami           = each.value.ami_id
   instance_type = each.value.instance_type
   subnet_id     = var.subnet_id[each.value.subnet_key]
-  key_name =      aws_key_pair.key_pair[each.value.instance_name].key_name
+  user_data = each.value.environment == "dev" ? templatefile ("${path.module}/userdata.sh.tpl", 
+  {
+    environment = each.value.environment
+    APP_NAME     = each.value.instance_name
+  }) : null
+    
   vpc_security_group_ids = [var.security_group_id[each.value.sg_key]]
   tags = {
     Name = each.value.instance_name

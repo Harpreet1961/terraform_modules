@@ -101,6 +101,7 @@ variable "tfc_ec2_object" {
     instance_type = string
     subnet_key    = string
     sg_key        = string
+    environment       = string
   }))
   default = {}
 

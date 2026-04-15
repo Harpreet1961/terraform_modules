@@ -21,3 +21,9 @@ output "subnet_id" {
   description = "Subnet IDs created by the module"
 
 }
+
+output "public-ip" {
+    value       = module.ec2_object.public-ip
+    description = "Public IP of EC2 Instance created by the module"
+  
+}
