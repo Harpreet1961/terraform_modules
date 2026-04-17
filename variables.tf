@@ -121,3 +121,9 @@ variable "security_group_id" {
 
 
 }
+
+variable "ebs_enabled" {
+    description = "Flag to enable/disable EBS volume creation"
+    type        = bool
+    default     = true
+}

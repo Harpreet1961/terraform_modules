@@ -26,7 +26,7 @@ module "ec2_object" {
   ec2_enabled       = var.ec2_enabled
   subnet_id         = module.vpc_object.subnet_id
   security_group_id = module.sg_object.sg_id
-
+  ebs_enabled = var.ebs_enabled  
   depends_on = [module.vpc_object, module.sg_object]
 
 }
