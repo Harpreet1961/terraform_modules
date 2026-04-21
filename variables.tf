@@ -127,3 +127,44 @@ variable "ebs_enabled" {
     type        = bool
     default     = true
 }
+
+
+####### RDS Variables #######
+variable "rds_enabled" {
+  description = "Flag to enable/disable RDS creation"
+  type        = bool
+  default     = true
+  
+}
+
+variable "tfc_rds_object" {
+  description = "RDS Object for RDS creation"
+  type = map(object({
+    db_instance_identifier = string
+    allocated_storage      = number
+    engine                 = string
+      engine_version         = string
+    instance_class         = string
+    username               = string
+    password               = string
+    db_name                = string
+    vpc_key                = string
+    #subnet_key             = string
+    sg_key                 = string
+   # subnet-group           = string
+  }))
+  default = {}
+
+}
+# variable "db_subnet_group_name" {
+#   description = "DB Subnet Group Name map for RDS creation"
+#   type        = map(string)
+#   default     = {}
+
+# }
+# variable "security_group_id" {
+#   description = "Security Group ID map for RDS creation"
+#   type        = map(string)
+#   default     = {}
+  
+# }

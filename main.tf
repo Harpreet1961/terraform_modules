@@ -30,3 +30,14 @@ module "ec2_object" {
   depends_on = [module.vpc_object, module.sg_object]
 
 }
+
+module "rds_object" {
+    source                = "./modules/RDS"
+    tfc_rds_object        = var.tfc_rds_object
+    rds_enabled           = var.rds_enabled
+    private_subnet_ids    = module.vpc_object.private_subnets_by_vpc
+    security_group_id     = module.sg_object.sg_id
+    
+    depends_on = [module.vpc_object, module.sg_object]
+  
+}
