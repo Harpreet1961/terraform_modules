@@ -2,7 +2,7 @@ variable "rds_enabled" {
   description = "Flag to enable/disable RDS creation"
   type        = bool
   default     = true
-  
+
 }
 
 variable "tfc_rds_object" {
@@ -17,9 +17,10 @@ variable "tfc_rds_object" {
     password               = string
     db_name                = string
     vpc_key                = string
-   
-    sg_key                 = string
-   # subnet-group           = string
+
+    sg_key = string
+    allowed_sg_key = string
+    # subnet-group           = string
   }))
   default = {}
 
@@ -36,5 +37,5 @@ variable "security_group_id" {
   description = "Security Group ID map for RDS creation"
   type        = map(string)
   default     = {}
-  
+
 }

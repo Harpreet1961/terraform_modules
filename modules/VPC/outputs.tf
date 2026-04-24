@@ -26,12 +26,12 @@ output "subnet_name" {
     { for k, v in aws_subnet.public_subnet : k => v.tags["Name"] },
     { for k, v in aws_subnet.private_subnet : k => v.tags["Name"] }
   )
-  
+
 }
 
 output "private_subnet_name" {
   value = { for k, v in aws_subnet.private_subnet : k => v.tags["Name"] }
-  
+
 }
 
 output "private_subnets_by_vpc" {

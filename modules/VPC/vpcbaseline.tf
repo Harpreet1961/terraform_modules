@@ -6,11 +6,11 @@ locals {
       vpc_id     = v.id
     }
   }
-#  nat_by_az = {
-#     for k, v in var.tfc_subnets_object :
-#     v.vpc_key => k
-#     if v.subnet_type == "public"
-#   }
+  #  nat_by_az = {
+  #     for k, v in var.tfc_subnets_object :
+  #     v.vpc_key => k
+  #     if v.subnet_type == "public"
+  #   }
 
   nat_obj = {
     for k, v in aws_nat_gateway.nat_gw :
@@ -69,7 +69,7 @@ resource "aws_route_table" "Public_route_table" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw[each.value.vpc_key].id
   }
-  
+
   tags = {
     Name = "${each.value.subnet_name}-public-rt"
   }
@@ -84,41 +84,41 @@ resource "aws_route_table_association" "Public_route_table_association" {
 }
 
 resource "aws_eip" "nat_eip" {
-  for_each = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "public" && var.vpc_enabled && var.nat_enabled}
-  domain = "vpc"
+  for_each = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "public" && var.vpc_enabled && var.nat_enabled }
+  domain   = "vpc"
   tags = {
     Name = "${each.value.subnet_name}-nat-eip"
   }
-  
+
 }
 
 resource "aws_nat_gateway" "nat_gw" {
-  for_each = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "public" && var.vpc_enabled && var.nat_enabled}
+  for_each      = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "public" && var.vpc_enabled && var.nat_enabled }
   allocation_id = aws_eip.nat_eip[each.key].id
   subnet_id     = aws_subnet.public_subnet[each.key].id
   tags = {
     Name = "${each.value.subnet_name}-nat-gw"
   }
-  
+
 }
 
 resource "aws_route_table" "Private_route_table" {
   for_each = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "private" && var.vpc_enabled && var.nat_enabled }
   vpc_id   = local.vpc_obj[each.value.vpc_key].vpc_id
   route {
-    cidr_block     = "0.0.0.0/0"
-  # nat_gateway_id = aws_nat_gateway.nat_gw[local.nat_by_az[each.value.vpc_key]].id
+    cidr_block = "0.0.0.0/0"
+    # nat_gateway_id = aws_nat_gateway.nat_gw[local.nat_by_az[each.value.vpc_key]].id
     nat_gateway_id = local.nat_obj["${each.value.vpc_key}-${each.value.availability_zone}"].nat_id
   }
-    tags = {
-        Name = "${each.value.subnet_name}-private-rt"
-    }
-  
+  tags = {
+    Name = "${each.value.subnet_name}-private-rt"
+  }
+
 }
 
 resource "aws_route_table_association" "Private_route_table_association" {
-    for_each       = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "private" && var.vpc_enabled && var.nat_enabled }
-    subnet_id      = aws_subnet.private_subnet[each.key].id
-    route_table_id = aws_route_table.Private_route_table[each.key].id
-  
+  for_each       = { for k, v in var.tfc_subnets_object : k => v if v.subnet_type == "private" && var.vpc_enabled && var.nat_enabled }
+  subnet_id      = aws_subnet.private_subnet[each.key].id
+  route_table_id = aws_route_table.Private_route_table[each.key].id
+
 }

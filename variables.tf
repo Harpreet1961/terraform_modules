@@ -101,7 +101,7 @@ variable "tfc_ec2_object" {
     instance_type = string
     subnet_key    = string
     sg_key        = string
-    environment       = string
+    environment   = string
   }))
   default = {}
 
@@ -123,9 +123,9 @@ variable "security_group_id" {
 }
 
 variable "ebs_enabled" {
-    description = "Flag to enable/disable EBS volume creation"
-    type        = bool
-    default     = true
+  description = "Flag to enable/disable EBS volume creation"
+  type        = bool
+  default     = true
 }
 
 
@@ -134,7 +134,7 @@ variable "rds_enabled" {
   description = "Flag to enable/disable RDS creation"
   type        = bool
   default     = true
-  
+
 }
 
 variable "tfc_rds_object" {
@@ -143,15 +143,16 @@ variable "tfc_rds_object" {
     db_instance_identifier = string
     allocated_storage      = number
     engine                 = string
-      engine_version         = string
+    engine_version         = string
     instance_class         = string
     username               = string
     password               = string
     db_name                = string
     vpc_key                = string
     #subnet_key             = string
-    sg_key                 = string
-   # subnet-group           = string
+    sg_key = string
+    allowed_sg_key = string
+    # subnet-group           = string
   }))
   default = {}
 
@@ -166,5 +167,5 @@ variable "tfc_rds_object" {
 #   description = "Security Group ID map for RDS creation"
 #   type        = map(string)
 #   default     = {}
-  
+
 # }
