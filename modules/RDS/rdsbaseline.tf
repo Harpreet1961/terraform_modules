@@ -17,7 +17,8 @@ resource "aws_db_instance" "rds" {
   instance_class         = each.value.instance_class
   db_name                = each.value.db_name
   username               = each.value.username
-  password               = each.value.password
+  #password               = each.value.password
+  manage_master_user_password = true
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group[each.key].name
   vpc_security_group_ids = [var.security_group_id[each.value.sg_key]]
   skip_final_snapshot    = true

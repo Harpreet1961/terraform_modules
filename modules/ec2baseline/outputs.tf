@@ -12,3 +12,4 @@ output "public-ip" {
   description = "Public IP of EC2 Instance created by the module"
 
 }
+
