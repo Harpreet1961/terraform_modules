@@ -1,4 +1,4 @@
-variable "tfc_iam_object" {
+variable "tfc_iam_role_object" {
     description = "IAM Role Object for IAM Role creation"
     type = map(object({
         role_name     = string
