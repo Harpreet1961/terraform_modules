@@ -20,3 +20,9 @@ output "role_name" {
     description = "The name of the IAM role created in the rolebaseline module."
   
 }
+
+output "role_arn" {
+    value = module.iam_role_object.role_arn
+    description = "The ARN of the IAM role created in the rolebaseline module."
+  
+}

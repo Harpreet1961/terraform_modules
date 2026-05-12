@@ -46,3 +46,16 @@ output "private_subnets_by_vpc" {
     ]
   }
 }
+
+output "public_subnets_by_vpc" {
+  description = "Public subnet IDs grouped by VPC"
+
+  value = {
+    for vpc_key in keys(var.tfc_vpc_object) :
+    vpc_key => [
+      for subnet_key, subnet in aws_subnet.public_subnet :
+      subnet.id
+      if var.tfc_subnets_object[subnet_key].vpc_key == vpc_key
+    ]
+  }
+}

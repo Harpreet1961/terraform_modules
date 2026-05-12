@@ -1,20 +1,4 @@
-output "vpc_id" {
-  value       = module.vpc_object.vpc_id
-  description = "VPC ID created by the module"
 
-}
-
-output "sg_id" {
-  value       = module.sg_object.sg_id
-  description = "Security Group ID created by the module"
-
-}
-
-output "instance_id" {
-  value       = module.ec2_object.instane_id
-  description = "EC2 Instance ID created by the module"
-
-}
 
 output "subnet_id" {
   value       = module.vpc_object.subnet_id
@@ -25,29 +9,6 @@ output "subnet_id" {
 output "private_subnet_ids" {
   value       = module.vpc_object.private_subnet_ids
   description = "Private Subnet IDs created by the module"
-
-}
-
-output "public-ip" {
-  value       = module.ec2_object.public-ip
-  description = "Public IP of EC2 Instance created by the module"
-
-}
-
-output "endpoint" {
-  value       = module.rds_object.endpoint
-  description = "RDS Endpoint created by the module"
-
-}
-
-output "arn" {
-  value       = module.rds_object.arn
-  description = "RDS ARN created by the module"
-}
-
-output "username" {
-  value       = module.rds_object.username
-  description = "RDS Username created by the module"
 
 }
 
@@ -73,8 +34,40 @@ output "private_subnets_by_vpc" {
 
 }
 
+
 output "public_subnets_by_vpc" {
   value       = module.vpc_object.public_subnets_by_vpc
-  description = "Public subnet IDs grouped by VPC created by the module"
+    description = "Public subnet IDs grouped by VPC created by the module"  
+}
+
+
+##### IAM Outputs
+
+output "policy_id" {  
+    value = module.iam_policy_object.policy_id
+    description = "The ID of the IAM policy created in the policybaseline module."
+}
+
+output "policy_json" {
+    value = module.iam_policy_object.policy_json
+    description = "The JSON document of the IAM policy created in the policybaseline module."
+  
+}
+
+output "policy_arn" {
+    value = module.iam_policy_object.policy_arn
+    description = "The ARN of the IAM policy created in the policybaseline module."
+  
+}
+
+output "role_name" {
+    value = module.iam_role_object.role_name
+    description = "The name of the IAM role created in the rolebaseline module."
+  
+}
+
+output "role_arn" {
+    value = module.iam_role_object.role_arn
+    description = "The ARN of the IAM role created in the rolebaseline module."
   
 }
