@@ -1,5 +1,11 @@
 
-
+##### Outputs for EKS Example####
+output "endpoint" {
+    value       = module.eks_object.endpoint
+    description = "The endpoint of the EKS cluster created by the module"
+  
+}
+####VPC Outputs#####
 output "subnet_id" {
   value       = module.vpc_object.subnet_id
   description = "Subnet IDs created by the module"
