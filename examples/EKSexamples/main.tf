@@ -36,7 +36,7 @@ module "eks_object" {
 
 locals {
   policy_by_assume_key = { for k, v in var.tfc_iam_policy_object : v.assume_role_policy_key => k }
-}
+} 
 
 resource "aws_iam_policy_attachment" "role_policy_attachment" {
   for_each = { for k, v in var.tfc_iam_role_object  : k => v if var.iam_policy_enabled }
@@ -47,7 +47,7 @@ resource "aws_iam_policy_attachment" "role_policy_attachment" {
 
 ######EKS Cluster with IAM Role and Policy
 
-resource "aws_eks_cluster" "example" {
+/*resource "aws_eks_cluster" "example" {
   name = "example"
 
   access_config {
@@ -110,4 +110,4 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
 #   access_scope {
 #     type = "cluster"
 #   }
-# }
+# }*/

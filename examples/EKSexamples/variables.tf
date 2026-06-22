@@ -102,6 +102,19 @@ variable "tfc_eks_object" {
         vpc_key = string
         role_key = string
         node_role_key = string
+        capacity_type = string
+        instance_types = list(string)
+        disk_size = number
+        desired_size = number
+        max_size = number
+        min_size = number
+        environment = string
+        nodegroup = string
+        eks_addons = list(object({
+            addon_name = string
+            addon_version = string
+            resolve_conflicts = string
+        }))
     }))
     default = {}
   
