@@ -26,7 +26,7 @@ jobs:
           terraform_version: 1.5.7
 
       - name: Terraform Init
-        working-directory: examples/EKSexamples    
+        working-directory: examples/EKSexamples
         run: terraform init
 
       - name: Terraform Plan
