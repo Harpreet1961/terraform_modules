@@ -26,9 +26,12 @@ jobs:
           terraform_version: 1.5.7
 
       - name: Terraform Init
-        working-directory: examples/EKSexamples    
+        working-directory: examples/EKSexamples
         run: terraform init
 
       - name: Terraform Plan
         working-directory: examples/EKSexamples
-        run: terraform plan -out=tfplan
+        run: |
+            terraform plan -out=tfplan
+            terraform show -no-color tfplan > plan.txt
+            cat plan.txt
