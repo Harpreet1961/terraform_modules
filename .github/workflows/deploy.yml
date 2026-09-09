@@ -23,6 +23,13 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.7
+        
+      - name: Write tfvars
+        working-directory: examples/EKSexamples    
+        env: 
+         TFVARS_CONTENT: ${{ secrets.TFVARS_CONTENT }}
+        run: |
+             printf "%s" "$TFVARS_CONTENT" > examples/EKSexamples/terraform.tfvars    
 
       - name: Terraform Init
         working-directory: examples/EKSexamples
