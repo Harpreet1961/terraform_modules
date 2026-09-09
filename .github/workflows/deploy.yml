@@ -43,14 +43,12 @@ jobs:
          echo "=== Terraform Workspace ==="
          terraform workspace show
 
-         echo "=== Terraform State ==="
-         terraform state list || true
 
          echo "=== AWS Identity ==="
          aws sts get-caller-identity
 
          echo "=== AWS Region ==="
-         aws configure get region  
+         echo "$AWS_REGION"
 
       - name: Terraform Plan
         working-directory: examples/EKSexamples
