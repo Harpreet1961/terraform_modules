@@ -29,7 +29,7 @@ jobs:
         env: 
          TFVARS_CONTENT: ${{ secrets.TFVARS_CONTENT }}
         run: |
-             printf "%s" "$TFVARS_CONTENT" > examples/EKSexamples/terraform.tfvars    
+             printf "%s" "$TFVARS_CONTENT" > terraform.tfvars    
 
       - name: Terraform Init
         working-directory: examples/EKSexamples
