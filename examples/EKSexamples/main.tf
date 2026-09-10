@@ -1,3 +1,7 @@
+terraform {
+  required_version = "~> 1.9.5"
+
+}
 provider "aws" {
   region = "ap-south-1"
 
