@@ -29,20 +29,23 @@ jobs:
         working-directory: examples/EKSexamples
         run: terraform init    
 
-      - name: Write tfvars
-        working-directory: examples/EKSexamples    
-        env: 
-         TFVARS_CONTENT: ${{ secrets.TFVARS_CONTENT }}
-        run: |
-             printf "%s" "$TFVARS_CONTENT" > terraform.tfvars     
         
       - name: Terraform Format
         working-directory: examples/EKSexamples
         run: terraform fmt -check -recursive
 
+     
+      - name: Write tfvars
+        working-directory: examples/EKSexamples    
+        env: 
+         TFVARS_CONTENT: ${{ secrets.TFVARS_CONTENT }}
+        run: |
+             printf "%s" "$TFVARS_CONTENT" > terraform.tfvars   
+
       - name: Terraform Validate
         working-directory: examples/EKSexamples
         run: terraform validate
+
 
      
 
