@@ -54,7 +54,7 @@ output "username" {
 output "public_subnet_ids" {
   value       = module.vpc_object.public_subnet_ids
   description = "Public Subnet IDs created by the module"
-  
+
 }
 
 output "subnet_name" {
@@ -76,5 +76,5 @@ output "private_subnets_by_vpc" {
 output "public_subnets_by_vpc" {
   value       = module.vpc_object.public_subnets_by_vpc
   description = "Public subnet IDs grouped by VPC created by the module"
-  
+
 }

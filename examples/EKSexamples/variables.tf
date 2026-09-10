@@ -50,93 +50,93 @@ variable "tfc_subnets_object" {
 variable "tfc_iam_policy_object" {
   description = "IAM Policy Object for IAM Policy creation"
   type = map(object({
-    policy_name     = string
-    policy_document = string
+    policy_name            = string
+    policy_document        = string
     assume_role_policy_key = string
   }))
   default = {}
-  
+
 }
 
 variable "iam_policy_enabled" {
   description = "Flag to enable/disable IAM Policy creation"
   type        = bool
   default     = true
-  
+
 }
 
 
 #### role variables
 
 variable "tfc_iam_role_object" {
-    description = "IAM Role Object for IAM Role creation"
-    type = map(object({
-        role_name     = string
-        assume_role_policy_key = string
-    }))
-    default = {} 
-  
+  description = "IAM Role Object for IAM Role creation"
+  type = map(object({
+    role_name              = string
+    assume_role_policy_key = string
+  }))
+  default = {}
+
 }
 
 variable "iam_enabled" {
-    description = "Flag to enable/disable IAM Role creation"
-    type        = bool
-    default     = true
-  
+  description = "Flag to enable/disable IAM Role creation"
+  type        = bool
+  default     = true
+
 }
 
 variable "iam_assume_role_policy" {
-    description = "Map of assume role policies for IAM Role creation"
-    type        = map(any)
-    default     = {}
-  
+  description = "Map of assume role policies for IAM Role creation"
+  type        = map(any)
+  default     = {}
+
 }
 
 ##### EKS Variables #####
 variable "tfc_eks_object" {
-    description = "EKS Object for EKS Cluster creation"
-    type = map(object({
-        cluster_name = string
-        kubernetes_version = string
-        bootstrap_self_managed_addons = bool
-        vpc_key = string
-        role_key = string
-        node_role_key = string
-        capacity_type = string
-        instance_types = list(string)
-        disk_size = number
-        desired_size = number
-        max_size = number
-        min_size = number
-        environment = string
-        nodegroup = string
-        eks_addons = list(object({
-            addon_name = string
-            addon_version = string
-            resolve_conflicts = string
-        }))
+  description = "EKS Object for EKS Cluster creation"
+  type = map(object({
+    cluster_name                  = string
+    kubernetes_version            = string
+    bootstrap_self_managed_addons = bool
+    vpc_key                       = string
+    role_key                      = string
+    node_role_key                 = string
+    capacity_type                 = string
+    instance_types                = list(string)
+    disk_size                     = number
+    desired_size                  = number
+    max_size                      = number
+    min_size                      = number
+    environment                   = string
+    nodegroup                     = string
+    eks_addons = list(object({
+      addon_name        = string
+      addon_version     = string
+      resolve_conflicts = string
     }))
-    default = {}
-  
+  }))
+  default = {}
+
 }
 
 variable "eks_enabled" {
-    description = "Flag to enable/disable EKS Cluster creation"
-    type        = bool
-    default     = true
-  
+  description = "Flag to enable/disable EKS Cluster creation"
+  type        = bool
+  default     = true
+
 }
 
 variable "eks_role_arn" {
-    description = "ARN of the IAM Role to be used by the EKS Cluster"
-    type        = string
-    default     = ""
-  
+  description = "ARN of the IAM Role to be used by the EKS Cluster"
+  type        = string
+  default     = ""
+
 }
 
 variable "eks_subnet_ids" {
-    description = "List of Subnet IDs for the EKS Cluster VPC configuration"
-    type        = list(string)
-    default     = []
-  
+  description = "List of Subnet IDs for the EKS Cluster VPC configuration"
+  type        = list(string)
+  default     = []
+
 }

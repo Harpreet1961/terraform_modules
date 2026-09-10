@@ -6,6 +6,6 @@ resource "aws_iam_policy" "policy" {
   tags = {
     Name = each.value.policy_name
   }
-  
+
 }
 
