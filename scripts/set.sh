@@ -4,11 +4,13 @@ set -euo pipefail
 # ==============================================================================
 # GitHub OIDC -> AWS IAM setup script
 # Repo:   Harpreet1961/terraform_modules
-# Branch: dev
+# Trust:  allows OIDC AssumeRoleWithWebIdentity for:
+#           - pull_request events (any branch -> used by the "Plan" job)
+#           - push events to the production branch (used by the "Apply" job)
 # ==============================================================================
 
 REPO="Harpreet1961/terraform_modules"
-BRANCH="dev"
+PROD_BRANCH="main"
 ROLE_NAME="github-actions-terraform-modules-dev"
 POLICY_NAME="github-actions-terraform-modules-policy"
 OIDC_URL="https://token.actions.githubusercontent.com"
@@ -55,7 +57,10 @@ cat > "${WORKDIR}/trust-policy.json" <<EOF
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
         },
         "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:${REPO}:ref:refs/heads/${BRANCH}"
+          "token.actions.githubusercontent.com:sub": [
+            "repo:${REPO}:pull_request",
+            "repo:${REPO}:ref:refs/heads/${PROD_BRANCH}"
+          ]
         }
       }
     }
@@ -76,7 +81,7 @@ else
   aws iam create-role \
     --role-name "${ROLE_NAME}" \
     --assume-role-policy-document "file://${WORKDIR}/trust-policy.json" \
-    --description "Role for GitHub Actions OIDC - ${REPO} (${BRANCH} branch)"
+    --description "Role for GitHub Actions OIDC - ${REPO} (pull_request + push-to-${PROD_BRANCH})"
 fi
 
 # ------------------------------------------------------------------------------
@@ -102,5 +107,4 @@ echo " OIDC Provider ARN : ${OIDC_PROVIDER_ARN}"
 echo " Role Name         : ${ROLE_NAME}"
 echo " Role ARN          : ${ROLE_ARN}"
 echo ""
-
 rm -rf "${WORKDIR}"
