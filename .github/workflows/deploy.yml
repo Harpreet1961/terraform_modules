@@ -15,6 +15,11 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: terraform-eks-examples-${{ github.ref_name }}
+  cancel-in-progress: false  
+
+
 jobs:
   plan:
     name: Plan
