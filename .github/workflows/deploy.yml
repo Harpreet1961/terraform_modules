@@ -67,7 +67,8 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: examples/EKSexamples
-          fsoft_fail: false
+          soft_fail: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
      
