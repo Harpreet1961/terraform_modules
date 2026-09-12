@@ -39,7 +39,14 @@ else
 fi
 
 # ------------------------------------------------------------------------------
-# Step 2: Write the trust policy (scoped to repo + branch)
+# Step 2: Write the trust policy
+#   Allows AssumeRoleWithWebIdentity for exactly three OIDC identities:
+#     - pull_request              -> used by the "Plan" job
+#     - ref:refs/heads/<branch>   -> plain push to the production branch
+#     - environment:production    -> used by the "Apply" job, since it targets
+#                                    an environment with protection rules
+#                                    (required reviewers change the sub claim
+#                                    from ref:refs/heads/... to environment:...)
 # ------------------------------------------------------------------------------
 echo "==> Writing trust policy..."
 cat > "${WORKDIR}/trust-policy.json" <<EOF
@@ -59,7 +66,8 @@ cat > "${WORKDIR}/trust-policy.json" <<EOF
         "StringLike": {
           "token.actions.githubusercontent.com:sub": [
             "repo:${REPO}:pull_request",
-            "repo:${REPO}:ref:refs/heads/${PROD_BRANCH}"
+            "repo:${REPO}:ref:refs/heads/${PROD_BRANCH}",
+            "repo:${REPO}:environment:production"
           ]
         }
       }
@@ -107,4 +115,5 @@ echo " OIDC Provider ARN : ${OIDC_PROVIDER_ARN}"
 echo " Role Name         : ${ROLE_NAME}"
 echo " Role ARN          : ${ROLE_ARN}"
 echo ""
+
 rm -rf "${WORKDIR}"
