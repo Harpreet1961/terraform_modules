@@ -1,3 +1,7 @@
+terraform {
+  required_version = "~> 1.9.5"
+
+}
 provider "aws" {
   region = "ap-south-1"
 
@@ -11,38 +15,38 @@ module "vpc_object" {
 
 ### IAM Module
 module "iam_policy_object" {
-  source              = "../../modules/IAM/policybaseline"
+  source                = "../../modules/IAM/policybaseline"
   tfc_iam_policy_object = var.tfc_iam_policy_object
-  iam_policy_enabled  = var.iam_policy_enabled
+  iam_policy_enabled    = var.iam_policy_enabled
 }
 
 module "iam_role_object" {
-  source = "../../modules/IAM/rolebaseline"
+  source                 = "../../modules/IAM/rolebaseline"
   iam_assume_role_policy = var.iam_assume_role_policy
-  tfc_iam_role_object = var.tfc_iam_role_object
-  iam_enabled = var.iam_enabled
-  
+  tfc_iam_role_object    = var.tfc_iam_role_object
+  iam_enabled            = var.iam_enabled
+
 }
 
 module "eks_object" {
-    source = "../../modules/EKS"
-    tfc_eks_object = var.tfc_eks_object
-    eks_enabled = var.eks_enabled
-    eks_role_arn = module.iam_role_object.role_arn 
-    eks_subnet_ids = module.vpc_object.public_subnets_by_vpc
-    depends_on = [module.vpc_object, module.iam_role_object]
-  
+  source         = "../../modules/EKS"
+  tfc_eks_object = var.tfc_eks_object
+  eks_enabled    = var.eks_enabled
+  eks_role_arn   = module.iam_role_object.role_arn
+  eks_subnet_ids = module.vpc_object.public_subnets_by_vpc
+  depends_on     = [module.vpc_object, module.iam_role_object]
+
 }
 
 locals {
   policy_by_assume_key = { for k, v in var.tfc_iam_policy_object : v.assume_role_policy_key => k }
-} 
+}
 
 resource "aws_iam_policy_attachment" "role_policy_attachment" {
-  for_each = { for k, v in var.tfc_iam_role_object  : k => v if var.iam_policy_enabled }
-  name =    "${each.value.role_name}-attachment"
+  for_each   = { for k, v in var.tfc_iam_role_object : k => v if var.iam_policy_enabled }
+  name       = "${each.value.role_name}-attachment"
   policy_arn = module.iam_policy_object.policy_arn[local.policy_by_assume_key[each.value.assume_role_policy_key]]
-  roles = [module.iam_role_object.role_name[each.key]]
+  roles      = [module.iam_role_object.role_name[each.key]]
 }
 
 ######EKS Cluster with IAM Role and Policy

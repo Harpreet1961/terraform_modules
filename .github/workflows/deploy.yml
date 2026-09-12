@@ -1,66 +1,77 @@
 name: Terraform Deployment
-run-name: Deploy by ${{ github.actor }} on ${{ github.ref_name }} at ${{ github.event.workflow_run.head_commit.timestamp }}
+run-name: Deploy by ${{ github.actor }} on ${{ github.ref_name }}
 on: 
-    workflow_dispatch:
-jobs:
-  Init:
-    name: Init
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: dev
-
-      - name: AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.7
+    pull_request:
+      branches: [main]
+      paths:
+            - 'examples/EKSexamples/**'
     
+    push:
+      branches: [main]
+      paths:
+            - 'examples/EKSexamples/**'        
+    workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
 
-      - name: Terraform Init
-        working-directory: examples/EKSexamples
-        run: terraform init  
+concurrency:
+  group: terraform-eks-examples-${{ github.ref_name }}
+  cancel-in-progress: false  
+
+
+jobs:
   plan:
     name: Plan
-    needs: Init
     runs-on: ubuntu-latest
   
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          ref: dev
+          ref: ${{ github.sha }}
 
       - name: AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::650251690412:role/github-actions-terraform-modules-dev
           aws-region: ap-south-1
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.5.7
+          terraform_version: 1.9.5
 
       - name: Terraform Init
         working-directory: examples/EKSexamples
-        run: terraform init     
+        run: terraform init    
+
         
+      - name: Terraform Format
+        working-directory: examples/EKSexamples
+        run: terraform fmt -check -recursive
+
+     
       - name: Write tfvars
         working-directory: examples/EKSexamples    
         env: 
          TFVARS_CONTENT: ${{ secrets.TFVARS_CONTENT }}
         run: |
-             printf "%s" "$TFVARS_CONTENT" > terraform.tfvars    
+             printf "%s" "$TFVARS_CONTENT" > terraform.tfvars   
+
+      - name: Terraform Validate
+        working-directory: examples/EKSexamples
+        run: terraform validate
+
+      - name: Run tfsec security scan
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: examples/EKSexamples
+          soft_fail: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+
+     
 
 
       - name: Terraform Debug
@@ -79,8 +90,6 @@ jobs:
          terraform workspace show
 
 
-         echo "=== AWS Identity ==="
-         aws sts get-caller-identity
 
          echo "=== AWS Region ==="
          echo "$AWS_REGION"
@@ -90,36 +99,39 @@ jobs:
         run: |
           terraform plan -out=tfplan
           terraform show -no-color tfplan > plan.txt
-          cat plan.txt
+         # cat plan.txt
 
       - name: Upload plan artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tfplan
-          path: examples/EKSexamples/tfplan
+          name: tfplan-${{ github.sha }}
+          path: |
+            examples/EKSexamples/tfplan
+            examples/EKSexamples/plan.txt
+          if-no-files-found: error
+          retention-days: 5  
 
   apply:
     name: Apply
     runs-on: ubuntu-latest
     needs: plan
+    if: github.event_name == 'push'
     environment: production
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          ref: dev
+          ref: ${{ github.sha }}
 
       - name: AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
-
+          role-to-assume: arn:aws:iam::650251690412:role/github-actions-terraform-modules-dev
+          aws-region: ap-south-1        
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.5.7
+          terraform_version: 1.9.5
       
       - name: Terraform Init
         working-directory: examples/EKSexamples
@@ -128,8 +140,14 @@ jobs:
       - name: Download plan artifact
         uses: actions/download-artifact@v4
         with:
-          name: tfplan
+          name: tfplan-${{ github.sha }}
           path: examples/EKSexamples
+
+      - name: Verify Terraform Plan
+        working-directory: examples/EKSexamples
+        run: |
+         test -f tfplan || (echo "Terraform plan file not found!" && exit 1)
+         ls -lah tfplan    
 
 
       - name: Terraform Apply

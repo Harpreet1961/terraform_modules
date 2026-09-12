@@ -147,10 +147,10 @@ variable "tfc_rds_object" {
     instance_class         = string
     username               = string
     #password               = string
-    db_name                = string
-    vpc_key                = string
+    db_name = string
+    vpc_key = string
     #subnet_key             = string
-    sg_key = string
+    sg_key         = string
     allowed_sg_key = string
     # subnet-group           = string
   }))

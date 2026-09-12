@@ -14,11 +14,11 @@ variable "tfc_rds_object" {
     engine_version         = string
     instance_class         = string
     username               = string
-   # password               = string
-    db_name                = string
-    vpc_key                = string
+    # password               = string
+    db_name = string
+    vpc_key = string
 
-    sg_key = string
+    sg_key         = string
     allowed_sg_key = string
     # subnet-group           = string
   }))
